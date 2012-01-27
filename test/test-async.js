@@ -32,6 +32,32 @@ exports['auto'] = function(test){
     });
 };
 
+exports['auto hop'] = function(test){
+    var callOrder = [];
+    var testdata = [{test: 'test'}];
+
+    async.auto({
+        hasOwnProperty: function(callback){
+            setTimeout(function(){
+                callOrder.push('hasOwnProperty');
+                callback();
+            }, 25);
+        },
+
+        task2:[ 'hasOwnProperty', function(callback){
+            setTimeout(function(){
+                callOrder.push('task2');
+                callback();
+            }, 50);
+        } ]
+    },
+
+    function(err){
+        test.same(callOrder, ['hasOwnProperty','task2']);
+        test.done();
+    });
+};
+
 exports['auto results'] = function(test){
     var callOrder = [];
     async.auto({
