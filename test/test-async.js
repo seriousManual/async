@@ -1,6 +1,88 @@
 var async = require('../lib/async');
 
 
+exports['eventedQueue'] = function( test ){
+
+    var  callOrder      = []
+        ,numberCalled   = 0
+        ,eq             = async.eventedQueue( false );
+
+    var testFunction = function( nr, time ) {
+        setTimeout( function() {
+            callOrder.push( nr );
+        }, time );
+
+        numberCalled++;
+
+        if ( numberCalled == 6 ) {
+            test.same( callOrder, ['task2','task1','task4','task3','task5','task6'] );
+            test.done();
+        }
+    };
+
+    eq.push( testFunction, 'task1', 20 );
+    eq.push( testFunction, 'task2', 10 );
+    eq.push( testFunction, 'task3', 50 );
+    eq.push( testFunction, 'task4', 30 );
+
+    test.equal( eq.triggerQueue.length, 4 );
+    test.equal( numberCalled, 0 );
+
+    eq.trigger();
+
+    eq.push( testFunction, 'task5', 100 );
+    eq.push( testFunction, 'task6', 120 );
+
+
+
+};
+
+exports['eventedQueue queueTriggered'] = function( test ){
+
+    var  callOrder      = []
+        ,numberCalled   = 0
+        ,eq             = async.eventedQueue( true );
+
+    var testFunction = function( nr, time ) {
+        setTimeout( function() {
+            callOrder.push( nr );
+
+            numberCalled++;
+
+            if ( numberCalled == 4 ) {
+                test.same( callOrder, ['task2','task1','task4','task3'] );
+                test.equal( eq.triggerQueue.length, 2 );
+                test.equal( numberCalled, 4 );
+
+                eq.trigger();
+            }
+
+            if ( numberCalled == 6 ) {
+                test.same( callOrder, ['task2','task1','task4','task3','task5','task6'] );
+                test.equal( eq.triggerQueue.length, 0 );
+                test.equal( numberCalled, 4 );
+                test.done();
+            }
+
+        }, time );
+    };
+
+    eq.push( testFunction, 'task1', 20 );
+    eq.push( testFunction, 'task2', 10 );
+    eq.push( testFunction, 'task3', 50 );
+    eq.push( testFunction, 'task4', 30 );
+
+    test.equal( eq.triggerQueue.length, 4 );
+    test.equal( numberCalled, 0 );
+
+    eq.trigger();
+
+    eq.push( testFunction, 'task5', 100 );
+    eq.push( testFunction, 'task6', 120 );
+
+};
+
+
 exports['auto'] = function(test){
     var callOrder = [];
     var testdata = [{test: 'test'}];
@@ -1030,6 +1112,7 @@ var console_fn_tests = function(name){
 
 console_fn_tests('log');
 console_fn_tests('dir');
+
 /*console_fn_tests('info');
 console_fn_tests('warn');
 console_fn_tests('error');*/
