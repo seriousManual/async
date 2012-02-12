@@ -94,6 +94,52 @@ exports['eventedQueue error'] = function( test ){
     test.done();
 };
 
+exports['eventedQueue events'] = function( test ){
+
+    var  callOrder      = []
+        ,numberCalled   = 0
+        ,eq             = async.eventedQueue( true );
+
+    var testFunction = function( nr, time ) {
+        setTimeout( function() {
+            callOrder.push( nr );
+
+            numberCalled++;
+            if ( numberCalled == 4 ) {
+                test.same( callOrder, ['empty','task2','task1','task4','task3'] );
+                test.equal( eq.length(), 2 );
+                test.equal( numberCalled, 4 );
+
+                eq.trigger();
+            }
+
+            if ( numberCalled == 6 ) {
+                test.same( callOrder, ['empty','task2','task1','task4','task3','empty','task5','task6'] );
+                test.equal( eq.length(), 0 );
+                test.equal( numberCalled, 6 );
+                test.done();
+            }
+        }, time );
+    };
+
+    eq.empty = function() {
+        callOrder.push( 'empty' );
+    };
+
+    eq.push( testFunction, 'task1', 20 );
+    eq.push( testFunction, 'task2', 10 );
+    eq.push( testFunction, 'task3', 50 );
+    eq.push( testFunction, 'task4', 30 );
+
+    test.equal( eq.length(), 4 );
+    test.equal( numberCalled, 0 );
+
+    eq.trigger();
+
+    eq.push( testFunction, 'task5', 100 );
+    eq.push( testFunction, 'task6', 120 );
+
+};
 
 exports['auto'] = function(test){
     var callOrder = [];
