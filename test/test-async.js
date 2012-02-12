@@ -653,7 +653,7 @@ exports['forEachLimit limit exceeds size'] = function(test){
         setTimeout(function(){
             args.push(x);
             callback();
-        }, x*5);
+        }, x*25);
     }, function(err){
         test.same(args, arr);
         test.done();
@@ -667,7 +667,7 @@ exports['forEachLimit limit equal size'] = function(test){
         setTimeout(function(){
             args.push(x);
             callback();
-        }, x*5);
+        }, x*25);
     }, function(err){
         test.same(args, arr);
         test.done();
@@ -1167,7 +1167,7 @@ exports['noConflict - node only'] = function(test){
         var filename = __dirname + '/../lib/async.js';
         fs.readFile(filename, function(err, content){
             if(err) return test.done();
-            var Script = process.binding('evals').Script;
+            var Script = process.binding('evals').NodeScript;
 
             var s = new Script(content, filename);
             var s2 = new Script(
