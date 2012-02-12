@@ -26,7 +26,7 @@ exports['eventedQueue'] = function( test ){
     eq.push( testFunction, 'task3', 50 );
     eq.push( testFunction, 'task4', 30 );
 
-    test.equal( eq.triggerQueue.length, 4 );
+    test.equal( eq.length(), 4 );
     test.equal( numberCalled, 0 );
 
     eq.trigger();
@@ -50,7 +50,7 @@ exports['eventedQueue queueTriggered'] = function( test ){
 
             if ( numberCalled == 4 ) {
                 test.same( callOrder, ['task2','task1','task4','task3'] );
-                test.equal( eq.triggerQueue.length, 2 );
+                test.equal( eq.length(), 2 );
                 test.equal( numberCalled, 4 );
 
                 eq.trigger();
@@ -58,7 +58,7 @@ exports['eventedQueue queueTriggered'] = function( test ){
 
             if ( numberCalled == 6 ) {
                 test.same( callOrder, ['task2','task1','task4','task3','task5','task6'] );
-                test.equal( eq.triggerQueue.length, 0 );
+                test.equal( eq.length(), 0 );
                 test.equal( numberCalled, 6 );
                 test.done();
             }
@@ -71,7 +71,7 @@ exports['eventedQueue queueTriggered'] = function( test ){
     eq.push( testFunction, 'task3', 50 );
     eq.push( testFunction, 'task4', 30 );
 
-    test.equal( eq.triggerQueue.length, 4 );
+    test.equal( eq.length(), 4 );
     test.equal( numberCalled, 0 );
 
     eq.trigger();
@@ -1168,6 +1168,7 @@ exports['noConflict - node only'] = function(test){
         fs.readFile(filename, function(err, content){
             if(err) return test.done();
             var Script = process.binding('evals').Script;
+
             var s = new Script(content, filename);
             var s2 = new Script(
                 content + 'this.async2 = this.async.noConflict();',
