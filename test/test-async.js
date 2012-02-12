@@ -10,14 +10,15 @@ exports['eventedQueue'] = function( test ){
     var testFunction = function( nr, time ) {
         setTimeout( function() {
             callOrder.push( nr );
+
+            numberCalled++;
+
+            if ( numberCalled == 6 ) {
+                test.same( callOrder, ['task2','task1','task4','task3','task5','task6'] );
+                test.done();
+            }
+
         }, time );
-
-        numberCalled++;
-
-        if ( numberCalled == 6 ) {
-            test.same( callOrder, ['task2','task1','task4','task3','task5','task6'] );
-            test.done();
-        }
     };
 
     eq.push( testFunction, 'task1', 20 );
@@ -32,10 +33,8 @@ exports['eventedQueue'] = function( test ){
 
     eq.push( testFunction, 'task5', 100 );
     eq.push( testFunction, 'task6', 120 );
-
-
-
 };
+
 
 exports['eventedQueue queueTriggered'] = function( test ){
 
@@ -60,7 +59,7 @@ exports['eventedQueue queueTriggered'] = function( test ){
             if ( numberCalled == 6 ) {
                 test.same( callOrder, ['task2','task1','task4','task3','task5','task6'] );
                 test.equal( eq.triggerQueue.length, 0 );
-                test.equal( numberCalled, 4 );
+                test.equal( numberCalled, 6 );
                 test.done();
             }
 
@@ -80,6 +79,19 @@ exports['eventedQueue queueTriggered'] = function( test ){
     eq.push( testFunction, 'task5', 100 );
     eq.push( testFunction, 'task6', 120 );
 
+};
+
+exports['eventedQueue error'] = function( test ){
+
+    var eq = async.eventedQueue( false );
+
+    test.throws( function() { eq.push() } );
+    test.throws( function() { eq.push( true ) } );
+    test.throws( function() { eq.push( '' ) } );
+    test.throws( function() { eq.push( {} ) } );
+    test.throws( function() { eq.push( [] ) } );
+
+    test.done();
 };
 
 
@@ -1156,7 +1168,6 @@ exports['noConflict - node only'] = function(test){
         fs.readFile(filename, function(err, content){
             if(err) return test.done();
             var Script = process.binding('evals').Script;
-
             var s = new Script(content, filename);
             var s2 = new Script(
                 content + 'this.async2 = this.async.noConflict();',
