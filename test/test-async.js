@@ -23,16 +23,21 @@ exports['eventedQueue'] = function( test ){
 
     eq.push( testFunction, 'task1', 20 );
     eq.push( testFunction, 'task2', 10 );
-    eq.push( testFunction, 'task3', 50 );
+    eq.push( testFunction, 'task3', 40 );
     eq.push( testFunction, 'task4', 30 );
 
     test.equal( eq.length(), 4 );
     test.equal( numberCalled, 0 );
 
-    eq.trigger();
+    setTimeout( function() {
+        test.equal( eq.length(), 4 );
+        test.equal( numberCalled, 0 );
 
-    eq.push( testFunction, 'task5', 100 );
-    eq.push( testFunction, 'task6', 120 );
+        eq.trigger();
+
+        eq.push( testFunction, 'task5', 100 );
+        eq.push( testFunction, 'task6', 120 );
+    }, 50 );
 };
 
 
@@ -54,8 +59,11 @@ exports['eventedQueue queueTriggered'] = function( test ){
                 test.equal( numberCalled, 4 );
 
                 setTimeout( function() {
+                    test.equal( eq.length(), 2 );
+                    test.equal( numberCalled, 4 );
+
                     eq.trigger();
-                }, 500 );
+                }, 50 );
             }
 
             if ( numberCalled == 6 ) {
@@ -70,7 +78,7 @@ exports['eventedQueue queueTriggered'] = function( test ){
 
     eq.push( testFunction, 'task1', 20 );
     eq.push( testFunction, 'task2', 10 );
-    eq.push( testFunction, 'task3', 50 );
+    eq.push( testFunction, 'task3', 40 );
     eq.push( testFunction, 'task4', 30 );
 
     test.equal( eq.length(), 4 );
@@ -78,8 +86,8 @@ exports['eventedQueue queueTriggered'] = function( test ){
 
     eq.trigger();
 
-    eq.push( testFunction, 'task5', 100 );
-    eq.push( testFunction, 'task6', 120 );
+    eq.push( testFunction, 'task5', 10 );
+    eq.push( testFunction, 'task6', 20 );
 
 };
 
