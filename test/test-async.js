@@ -53,7 +53,9 @@ exports['eventedQueue queueTriggered'] = function( test ){
                 test.equal( eq.length(), 2 );
                 test.equal( numberCalled, 4 );
 
-                eq.trigger();
+                setTimeout( function() {
+                    eq.trigger();
+                }, 500 );
             }
 
             if ( numberCalled == 6 ) {
