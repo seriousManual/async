@@ -736,7 +736,7 @@ __Example__
 <a name="eventedQueue" />
 ### eventedQueue([queueTriggered])
 
-Creates a queue that defers the execution of submitted function calls until its execution has been triggered.
+Creates a queue that defers the execution of submitted function calls until its execution has been triggered explicitly.
 
 __Arguments__
 
@@ -754,6 +754,7 @@ methods:
   First argument has to be of the type 'function', every other argument is optional.
 * trigger() - Execute all queued functions. If the flag 'queueTriggered' has been set to false (or not been set), functions that
   are pushed after the trigger call will be executed immediatly. Otherwise the function calls will be queued up again, waiting for the next trigger call.
+* empty - a callback that is called when the last function call has been made
 
 __Example__
 
