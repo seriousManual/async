@@ -88,6 +88,7 @@ So far its been tested in IE6, IE7, IE8, FF3.6 and Chrome 5. Usage:
 * [until](#until)
 * [waterfall](#waterfall)
 * [queue](#queue)
+* [eventedQueue](#eventedQueue)
 * [auto](#auto)
 * [iterator](#iterator)
 * [apply](#apply)
@@ -758,6 +759,63 @@ __Example__
     q.push([{name: 'baz'},{name: 'bay'},{name: 'bax'}], function (err) {
         console.log('finished processing bar');
     });
+
+
+---------------------------------------
+
+<a name="eventedQueue" />
+### eventedQueue([queueTriggered])
+
+Creates a queue that defers the execution of submitted function calls until its execution has been triggered explicitly.
+
+__Arguments__
+
+* queueTriggered - Specifies if a submitted function call should be executed after the queue has been
+  triggered or if should be queued up again. (waiting for another trigger call)
+
+
+__eventedQueue object__
+
+The eventedQueue object returned by this function has the following properties and
+methods:
+
+* length() - a function returning the number of items waiting to be processed
+* push(function, [arg1,arg2,...]) - add new function calls to the queue, accompanied by its arguments
+  First argument has to be of the type 'function', every other argument is optional.
+* trigger() - Execute all queued functions. If the flag 'queueTriggered' has been set to false (or not been set), functions that
+  are pushed after the trigger call will be executed immediatly. Otherwise the function calls will be queued up again, waiting for the next trigger call.
+* empty - a callback that is called when the last function call has been made
+
+__Example__
+
+    // create a eventedQueue object, queueTriggered set to false
+
+    var eq = async.eventedQueue(false);
+
+    var myF = function( x ) { console.log( x ); };
+
+    eq.push( myF, 1 );
+    eq.push( myF, 2 );
+    eq.trigger();
+    eq.push( myF, 3 );
+    eq.push( myF, 4 );
+
+    //output will be: 1,2,3,4
+
+
+    // create a eventedQueue object, queueTriggered set to true
+
+    var eq = async.eventedQueue( true );
+
+    var myF = function( x ) { console.log( x ); };
+
+    eq.push( myF, 1 );
+    eq.push( myF, 2 );
+    eq.trigger();
+    eq.push( myF, 3 );
+    eq.push( myF, 4 );
+
+    //output will be: 1,2
 
 
 ---------------------------------------
