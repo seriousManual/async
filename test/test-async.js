@@ -1199,7 +1199,7 @@ exports['detectSeries - multiple matches'] = function(test){
 
 exports['sortBy'] = function(test){
     async.sortBy([{a:1},{a:15},{a:6}], function(x, callback){
-        setTimeout(function(){callback(null, -1*x.a);}, 0);
+        setTimeout(function(){callback(null, x.a);}, 0);
     }, function(err, result){
         test.same(result, [{a:1},{a:6},{a:15}]);
         test.done();
