@@ -734,14 +734,14 @@ __Example__
 ---------------------------------------
 
 <a name="eventedQueue" />
-### eventedQueue([queueTriggered])
+### eventedQueue([autoRelock])
 
 Creates a queue that defers the execution of submitted function calls until its execution has been triggered explicitly.
 
 __Arguments__
 
-* queueTriggered - Specifies if a submitted function call should be executed after the queue has been
-  triggered or if should be queued up again. (waiting for another trigger call)
+* autoRelock - Specifies if a submitted function call should be executed after the queue has been
+  triggered or if should be queued up again. (waiting for another trigger call) If parameter is not set, autoRelocking is set to false.
 
 
 __eventedQueue object__
@@ -754,11 +754,12 @@ methods:
   First argument has to be of the type 'function', every other argument is optional.
 * trigger() - Execute all queued functions. If the flag 'queueTriggered' has been set to false (or not been set), functions that
   are pushed after the trigger call will be executed immediatly. Otherwise the function calls will be queued up again, waiting for the next trigger call.
+* relock() - A method that causes every pushed function call to be queued up again when autoRelock has been set to false.
 * empty - a callback that is called when the last function call has been made
 
 __Example__
 
-    // create a eventedQueue object, queueTriggered set to false
+    // create a eventedQueue object, autoRelock is set to false
 
     var eq = async.eventedQueue(false);
 
@@ -773,7 +774,7 @@ __Example__
     //output will be: 1,2,3,4
 
 
-    // create a eventedQueue object, queueTriggered set to true
+    // create a eventedQueue object, autoRelock set to true
 
     var eq = async.eventedQueue( true );
 
