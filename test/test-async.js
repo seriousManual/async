@@ -144,7 +144,7 @@ exports['eventedQueue relock retrigger'] = function( test ){
         test.equal( numberCalled, 6 );
 
         eq.trigger();
-    }, 120 );
+    }, 160 );
 };
 
 exports['eventedQueue autorelock'] = function( test ){
