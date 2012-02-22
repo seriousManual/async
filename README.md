@@ -782,7 +782,7 @@ methods:
 * length() - a function returning the number of items waiting to be processed
 * push(function, [arg1,arg2,...]) - add new function calls to the queue, accompanied by its arguments
   First argument has to be of the type 'function', every other argument is optional.
-* trigger() - Execute all queued functions. If the flag 'queueTriggered' has been set to false (or not been set), functions that
+* trigger() - Execute all queued functions. If the flag 'autoRelock' has been set to false (or not been set), functions that
   are pushed after the trigger call will be executed immediatly. Otherwise the function calls will be queued up again, waiting for the next trigger call.
 * relock() - A method that causes every pushed function call to be queued up again when autoRelock has been set to false.
 * empty - a callback that is called when the last function call has been made
