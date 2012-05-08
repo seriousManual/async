@@ -89,6 +89,7 @@ So far its been tested in IE6, IE7, IE8, FF3.6 and Chrome 5. Usage:
 * [waterfall](#waterfall)
 * [queue](#queue)
 * [eventedQueue](#eventedQueue)
+* [coordinator](#coordinator)
 * [auto](#auto)
 * [iterator](#iterator)
 * [apply](#apply)
@@ -817,6 +818,33 @@ __Example__
     eq.push( myF, 4 );
 
     //output will be: 1,2
+
+
+---------------------------------------
+
+<a name="coordinator" />
+### coordinator(constraints, callback)
+
+Coordinates the happening of distinct events and fires the final callback if all events occured.
+
+__Arguments__
+
+* constraints - Array of event names that have to happen before the callback will be invoked
+* callback - Will be fired when all events are triggered
+
+__Example__
+
+    var coordinated = async.coordinator( ['event1','event2'], function() {
+        console.log('event1 and event2 have been triggered!');
+    });
+
+    setTimeout(function() {
+        coordinated('event1');
+    },100);
+
+    setTimeout(function() {
+        coordinated('event2');
+    },300);
 
 
 ---------------------------------------

@@ -1,6 +1,5 @@
 var async = require('../lib/async');
 
-
 exports['eventedQueue'] = function( test ){
 
     var  callOrder      = []
@@ -1950,4 +1949,35 @@ exports['queue events'] = function(test) {
     q.push('zoo', function () {calls.push('zoo cb');});
     q.push('poo', function () {calls.push('poo cb');});
     q.push('moo', function () {calls.push('moo cb');});
+};
+
+exports['coordinator'] = function( test ) {
+
+    var  eventsHappend  = []
+        ,events         = [ 'e1', 'e2', 'e3' ];
+
+    var coordinated = async.coordinator( events, function() {
+        test.ok( eventsHappend.indexOf( 'e1' ) > -1 );
+        test.ok( eventsHappend.indexOf( 'e2' ) > -1 );
+        test.ok( eventsHappend.indexOf( 'e3' ) > -1 );
+
+        test.same( events, [ 'e1', 'e2', 'e3' ] );
+        test.done();
+    } );
+
+    setTimeout( function() {
+        eventsHappend.push( 'e1' );
+        coordinated( 'e1' );
+    }, 300 );
+
+    setTimeout( function() {
+        eventsHappend.push( 'e2' );
+        coordinated( 'e2' );
+    }, 100 );
+
+    setTimeout( function() {
+        eventsHappend.push( 'e3' );
+        coordinated( 'e3' );
+    }, 200 );
+
 };
