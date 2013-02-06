@@ -1,5 +1,71 @@
 var async = require('../lib/async');
 
+if (!Function.prototype.bind) {
+    Function.prototype.bind = function (thisArg) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        var self = this;
+        return function () {
+            self.apply(thisArg, args.concat(Array.prototype.slice.call(arguments)));
+        }
+    };
+}
+
+function forEachIterator(args, x, callback) {
+    setTimeout(function(){
+        args.push(x);
+        callback();
+    }, x*25);
+}
+
+function mapIterator(call_order, x, callback) {
+    setTimeout(function(){
+        call_order.push(x);
+        callback(null, x*2);
+    }, x*25);
+}
+
+function filterIterator(x, callback) {
+    setTimeout(function(){
+        callback(x % 2);
+    }, x*25);
+}
+
+function detectIterator(call_order, x, callback) {
+    setTimeout(function(){
+        call_order.push(x);
+        callback(x == 2);
+    }, x*25);
+}
+
+function forEachNoCallbackIterator(test, x, callback) {
+    test.equal(x, 1);
+    callback();
+    test.done();
+}
+
+function getFunctionsObject(call_order) {
+    return {
+        one: function(callback){
+            setTimeout(function(){
+                call_order.push(1);
+                callback(null, 1);
+            }, 125);
+        },
+        two: function(callback){
+            setTimeout(function(){
+                call_order.push(2);
+                callback(null, 2);
+            }, 200);
+        },
+        three: function(callback){
+            setTimeout(function(){
+                call_order.push(3);
+                callback(null, 3,3);
+            }, 50);
+        }
+    };
+}
+
 exports['eventedQueue'] = function( test ){
 
     var  callOrder      = []
@@ -255,73 +321,6 @@ exports['eventedQueue events'] = function( test ){
     eq.push( testFunction, 'task6', 120 );
 
 };
-
-if (!Function.prototype.bind) {
-    Function.prototype.bind = function (thisArg) {
-        var args = Array.prototype.slice.call(arguments, 1);
-        var self = this;
-        return function () {
-            self.apply(thisArg, args.concat(Array.prototype.slice.call(arguments)));
-        }
-    };
-}
-
-function forEachIterator(args, x, callback) {
-    setTimeout(function(){
-        args.push(x);
-        callback();
-    }, x*25);
-}
-
-function mapIterator(call_order, x, callback) {
-    setTimeout(function(){
-        call_order.push(x);
-        callback(null, x*2);
-    }, x*25);
-}
-
-function filterIterator(x, callback) {
-    setTimeout(function(){
-        callback(x % 2);
-    }, x*25);
-}
-
-function detectIterator(call_order, x, callback) {
-    setTimeout(function(){
-        call_order.push(x);
-        callback(x == 2);
-    }, x*25);
-}
-
-function forEachNoCallbackIterator(test, x, callback) {
-    test.equal(x, 1);
-    callback();
-    test.done();
-}
-
-function getFunctionsObject(call_order) {
-    return {
-        one: function(callback){
-            setTimeout(function(){
-                call_order.push(1);
-                callback(null, 1);
-            }, 125);
-        },
-        two: function(callback){
-            setTimeout(function(){
-                call_order.push(2);
-                callback(null, 2);
-            }, 200);
-        },
-        three: function(callback){
-            setTimeout(function(){
-                call_order.push(3);
-                callback(null, 3,3);
-            }, 50);
-        }
-    };
-}
->>>>>>> upstream/master
 
 exports['auto'] = function(test){
     var callOrder = [];
@@ -664,7 +663,7 @@ exports['parallel error'] = function(test){
 exports['parallel no callback'] = function(test){
     async.parallel([
         function(callback){callback();},
-        function(callback){callback(); test.done();},
+        function(callback){callback(); test.done();}
     ]);
 };
 
@@ -740,7 +739,7 @@ exports['parallel limit error'] = function(test){
 exports['parallel limit no callback'] = function(test){
     async.parallelLimit([
         function(callback){callback();},
-        function(callback){callback(); test.done();},
+        function(callback){callback(); test.done();}
     ], 1);
 };
 
@@ -816,7 +815,7 @@ exports['series error'] = function(test){
 exports['series no callback'] = function(test){
     async.series([
         function(callback){callback();},
-        function(callback){callback(); test.done();},
+        function(callback){callback(); test.done();}
     ]);
 };
 
@@ -1106,7 +1105,6 @@ exports['mapSeries error'] = function(test){
     });
     setTimeout(test.done, 50);
 };
-
 
 exports['mapLimit'] = function(test){
     var call_order = [];
@@ -1457,7 +1455,6 @@ exports['apply'] = function(test){
     test.done();
 };
 
-
 // generates tests for console functions such as async.log
 var console_fn_tests = function(name){
 
@@ -1518,8 +1515,6 @@ var console_fn_tests = function(name){
 
 };
 
-
-
 exports['times'] = function(test) {
   var indices = []
   async.times(5, function(n, next) {
@@ -1528,7 +1523,7 @@ exports['times'] = function(test) {
     test.same(results, [0,1,2,3,4])
     test.done()
   })
-}
+};
 
 exports['times'] = function(test){
     var args = [];
@@ -1731,7 +1726,7 @@ exports['until'] = function (test) {
                 ['iterator', 1], ['test', 2],
                 ['iterator', 2], ['test', 3],
                 ['iterator', 3], ['test', 4],
-                ['iterator', 4], ['test', 5],
+                ['iterator', 4], ['test', 5]
             ]);
             test.equals(count, 5);
             test.done();
@@ -1744,7 +1739,6 @@ exports['doUntil'] = function (test) {
     var count = 0;
     async.doUntil(
         function (cb) {
-            debugger
             call_order.push(['iterator', count]);
             count++;
             cb();
@@ -1788,7 +1782,7 @@ exports['whilst'] = function (test) {
                 ['iterator', 1], ['test', 2],
                 ['iterator', 2], ['test', 3],
                 ['iterator', 3], ['test', 4],
-                ['iterator', 4], ['test', 5],
+                ['iterator', 4], ['test', 5]
             ]);
             test.equals(count, 5);
             test.done();
@@ -1811,7 +1805,6 @@ exports['doWhilst'] = function (test) {
             return (count < 5);
         },
         function (err) {
-            debugger
             test.same(call_order, [
                 ['iterator', 0], ['test', 1],
                 ['iterator', 1], ['test', 2],
@@ -2066,7 +2059,7 @@ exports['queue bulk task'] = function (test) {
 
 exports['queue bulk task'] = function (test) {
     var call_order = [],
-        delays = [40,20,60,20];
+        delays = [160,80,240,80];
 
     // worker1: --1-4
     // worker2: -2---3
@@ -2080,6 +2073,25 @@ exports['queue bulk task'] = function (test) {
     }, 2);
 
     q.push( [1,2,3,4], function (err, arg) {
+        test.equal(err, 'error');
+        call_order.push('callback ' + arg);
+    });
+
+    test.equal(q.length(), 4);
+    test.equal(q.concurrency, 2);
+
+    setTimeout(function () {
+        test.same(call_order, [
+            'process 2', 'callback 2',
+            'process 1', 'callback 1',
+            'process 4', 'callback 4',
+            'process 3', 'callback 3'
+        ]);
+        test.equal(q.concurrency, 2);
+        test.equal(q.length(), 0);
+        test.done();
+    }, 800);
+};
 
 exports['cargo'] = function (test) {
     var call_order = [],
@@ -2223,7 +2235,7 @@ exports['cargo bulk task'] = function (test) {
         test.same(call_order, [
             'process 1 2 3', 'callback 1 2 3',
             'callback 1 2 3', 'callback 1 2 3',
-            'process 4', 'callback 4',
+            'process 4', 'callback 4'
         ]);
         test.equal(c.length(), 0);
         test.done();
@@ -2278,7 +2290,7 @@ exports['unmemoize'] = function(test) {
     test.same(call_order, [['fn',1,2], ['fn',1,2], ['fn',2,2]]);
 
     test.done();
-}
+};
 
 exports['unmemoize a not memoized function'] = function(test) {
     test.expect(1);
@@ -2293,7 +2305,7 @@ exports['unmemoize a not memoized function'] = function(test) {
     });
 
     test.done();
-}
+};
 
 exports['memoize error'] = function (test) {
     test.expect(1);
