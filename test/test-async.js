@@ -393,32 +393,6 @@ exports['auto petrify'] = function (test) {
     });
 };
 
-exports['auto hop'] = function(test){
-    var callOrder = [];
-    var testdata = [{test: 'test'}];
-
-    async.auto({
-        hasOwnProperty: function(callback){
-            setTimeout(function(){
-                callOrder.push('hasOwnProperty');
-                callback();
-            }, 25);
-        },
-
-        task2:[ 'hasOwnProperty', function(callback){
-            setTimeout(function(){
-                callOrder.push('task2');
-                callback();
-            }, 50);
-        } ]
-    },
-
-    function(err){
-        test.same(callOrder, ['hasOwnProperty','task2']);
-        test.done();
-    });
-};
-
 exports['auto results'] = function(test){
     var callOrder = [];
     async.auto({
@@ -2214,28 +2188,13 @@ exports['cargo bulk task'] = function (test) {
         call_order.push('callback ' + arg);
     });
 
-    test.equal(q.length(), 4);
-    test.equal(q.concurrency, 2);
-
-    setTimeout(function () {
-        test.same(call_order, [
-            'process 2', 'callback 2',
-            'process 1', 'callback 1',
-            'process 4', 'callback 4',
-            'process 3', 'callback 3'
-        ]);
-        test.equal(q.concurrency, 2);
-        test.equal(q.length(), 0);
-        test.done();
-    }, 200);
-
     test.equal(c.length(), 4);
 
     setTimeout(function () {
         test.same(call_order, [
             'process 1 2 3', 'callback 1 2 3',
             'callback 1 2 3', 'callback 1 2 3',
-            'process 4', 'callback 4'
+            'process 4', 'callback 4',
         ]);
         test.equal(c.length(), 0);
         test.done();
